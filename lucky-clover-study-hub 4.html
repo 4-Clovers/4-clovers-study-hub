@@ -1,0 +1,1022 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🍀 Lucky Clover Study Hub</title>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Quicksand:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #f2f7f4;
+    --card-bg: #ffffff;
+    --primary: #52796f;
+    --primary-hover: #354f52;
+    --accent-high: #e76f51;
+    --accent-med: #e9c46a;
+    --accent-low: #84a98c;
+    --accent-pink: #f4978e;
+    --accent-purple: #9d8df1;
+    --text: #2f3e46;
+    --line-color: #d1e3d7;
+    --border-radius: 20px;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Quicksand', sans-serif; }
+  body { background-color: var(--bg); color: var(--text); padding: 2rem 1rem; display: flex; justify-content: center; }
+  .container { width: 100%; max-width: 900px; display: flex; flex-direction: column; gap: 1.5rem; }
+
+  .group-banner { background: #cad2c5; padding: 1rem 1.5rem; border-radius: 15px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; border: 2px dashed var(--primary); }
+  .group-info { font-weight: 700; color: var(--primary-hover); display: flex; align-items: center; gap: 0.5rem; }
+  .code-badge { background: var(--card-bg); padding: 0.3rem 0.8rem; border-radius: 10px; letter-spacing: 2px; font-family: 'Fredoka One', cursive; color: var(--primary); border: 1px solid var(--primary); }
+  .sync-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--accent-low); display: inline-block; transition: background 0.2s ease; }
+  .sync-dot.syncing { background: var(--accent-med); animation: pulse 0.8s infinite; }
+  .sync-dot.error { background: var(--accent-high); }
+  @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.35; } }
+
+  header { text-align: center; background: var(--card-bg); padding: 2rem; border-radius: var(--border-radius); box-shadow: 0 8px 20px rgba(82, 121, 111, 0.12); border: 2px solid #cad2c5; }
+  header h1 { font-family: 'Fredoka One', cursive; color: var(--primary); font-size: 2.3rem; }
+  header p.subtitle { color: #6b7d76; margin-top: 0.3rem; font-weight: 600; }
+  .whoami { margin-top: 0.8rem; font-size: 0.85rem; color: var(--primary-hover); font-weight: 700; }
+  .whoami button { margin-left: 0.5rem; padding: 0.15rem 0.6rem; font-size: 0.75rem; border-radius: 8px; }
+  .progress-container { background: #e9f5ed; border-radius: 10px; height: 12px; width: 100%; margin-top: 1rem; overflow: hidden; }
+  .progress-bar { background: var(--primary); height: 100%; width: 0%; transition: width 0.4s ease; }
+  .progress-label { font-size: 0.8rem; color: #6b7d76; margin-top: 0.4rem; font-weight: 600; }
+
+  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 1.5rem; }
+
+  .card { background: var(--card-bg); padding: 1.5rem; border-radius: var(--border-radius); box-shadow: 0 8px 20px rgba(0, 0, 0, 0.03); border: 2px solid #cad2c5; }
+  .card h2 { font-family: 'Fredoka One', cursive; color: var(--primary); margin-bottom: 1rem; display: flex; align-items: center; justify-content: space-between; font-size: 1.3rem; }
+  .count-pill { background: var(--bg); color: var(--primary); font-size: 0.75rem; font-family: 'Quicksand', sans-serif; font-weight: 700; padding: 0.15rem 0.6rem; border-radius: 20px; border: 1px solid var(--line-color); }
+
+  .input-group { display: flex; flex-direction: column; gap: 0.5rem; margin-bottom: 1.2rem; }
+  input, select, textarea, button { padding: 0.8rem 1rem; border-radius: 12px; border: 2px solid #cad2c5; outline: none; font-size: 0.95rem; background: white; color: var(--text); }
+  textarea { resize: vertical; min-height: 90px; font-family: 'Quicksand', sans-serif; }
+  input:focus, select:focus, textarea:focus { border-color: var(--primary); }
+  button { background-color: var(--primary); color: white; font-weight: 700; border: none; cursor: pointer; transition: all 0.2s ease; }
+  button:hover { background-color: var(--primary-hover); transform: translateY(-2px); }
+  button:disabled { opacity: 0.55; cursor: not-allowed; transform: none; }
+  button.secondary { background: var(--card-bg); color: var(--primary); border: 2px solid var(--primary); }
+  button.secondary:hover { background: var(--bg); color: var(--primary-hover); }
+  button.ghost { background: transparent; color: var(--primary-hover); border: none; text-decoration: underline; padding: 0.3rem; }
+  button.ghost:hover { transform: none; background: transparent; color: var(--accent-high); }
+
+  .lined-notebook { background-color: white; background-image: linear-gradient(var(--line-color) 1px, transparent 1px); background-size: 100% 45px; padding: 0.2rem 0; border-left: 3px solid #ffb703; padding-left: 0.8rem; min-height: 45px; }
+  .todo-list { list-style: none; display: flex; flex-direction: column; }
+  .todo-item { min-height: 45px; display: flex; align-items: center; justify-content: space-between; padding-right: 0.5rem; gap: 0.5rem; }
+  .todo-left { display: flex; align-items: center; gap: 0.8rem; min-width: 0; }
+  .task-text { overflow-wrap: anywhere; }
+  .task-author { font-size: 0.7rem; color: #8a9691; flex-shrink: 0; }
+  .custom-checkbox { width: 22px; height: 22px; border-radius: 6px; border: 2px solid var(--primary); cursor: pointer; display: flex; align-items: center; justify-content: center; background: white; flex-shrink: 0; }
+  .todo-item.completed .custom-checkbox { background: var(--primary); }
+  .todo-item.completed .custom-checkbox::after { content: "✓"; color: white; font-size: 0.9rem; font-weight: bold; }
+  .todo-item.completed .task-text { text-decoration: line-through; color: #a0aab0; }
+  .badge { font-size: 0.65rem; padding: 0.2rem 0.5rem; border-radius: 12px; color: white; font-weight: 700; white-space: nowrap; flex-shrink: 0; }
+  .priority-High { background-color: var(--accent-high); }
+  .priority-Medium { background-color: var(--accent-med); color: #5c4a1a; }
+  .priority-Low { background-color: var(--accent-low); }
+  .badge.countdown-today { background-color: var(--accent-high); }
+  .badge.countdown-soon { background-color: var(--accent-med); color: #5c4a1a; }
+  .badge.countdown-later { background-color: var(--accent-low); }
+  .badge.countdown-past { background-color: #b0b8b4; }
+  .delete-btn { background: transparent; color: #bbb; border: none; font-size: 1rem; cursor: pointer; padding: 0; flex-shrink: 0; }
+  .delete-btn:hover { color: var(--accent-high); }
+  .empty-state { padding: 1rem 0.2rem; color: #8a9691; font-style: italic; font-size: 0.9rem; }
+  .banner-actions { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+  .banner-actions input { width: 140px; padding: 0.5rem 0.8rem; }
+  .banner-actions button { padding: 0.5rem 0.9rem; font-size: 0.85rem; }
+  .status-line { font-size: 0.72rem; color: #8a9691; margin-top: 0.5rem; text-align: center; }
+  .hidden { display: none; }
+
+  /* ---- Subjects section ---- */
+  .subjects-card { display: flex; flex-direction: column; gap: 1.2rem; }
+  .subject-chip-row { display: flex; flex-wrap: wrap; gap: 0.6rem; align-items: center; }
+  .subject-chip { padding: 0.5rem 1rem; border-radius: 999px; background: var(--bg); border: 2px solid var(--line-color); font-weight: 700; color: var(--primary-hover); cursor: pointer; font-size: 0.85rem; transition: all 0.15s ease; }
+  .subject-chip:hover { border-color: var(--primary); }
+  .subject-chip.active { background: var(--primary); color: white; border-color: var(--primary); }
+  .add-subject-row { display: flex; gap: 0.5rem; }
+  .add-subject-row input { flex: 1; }
+  .add-subject-row button { white-space: nowrap; }
+
+  .subject-panel { border-top: 2px dashed var(--line-color); padding-top: 1.2rem; display: flex; flex-direction: column; gap: 1.4rem; }
+  .subject-panel-header { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem; }
+  .subject-panel-header h3 { font-family: 'Fredoka One', cursive; color: var(--primary); font-size: 1.2rem; }
+  .subject-total-time { background: var(--bg); border: 1px solid var(--line-color); padding: 0.35rem 0.8rem; border-radius: 999px; font-size: 0.8rem; font-weight: 700; color: var(--primary-hover); }
+
+  .subsection { background: var(--bg); border-radius: 16px; padding: 1.1rem; border: 1px solid var(--line-color); }
+  .subsection h4 { font-size: 0.95rem; color: var(--primary-hover); margin-bottom: 0.6rem; display: flex; align-items: center; gap: 0.4rem; }
+  .notes-meta { font-size: 0.72rem; color: #8a9691; margin-top: 0.4rem; }
+
+  /* ---- Timer ---- */
+  .timer-display { font-family: 'Fredoka One', cursive; font-size: 2.6rem; color: var(--primary-hover); text-align: center; margin: 0.4rem 0 0.8rem; letter-spacing: 1px; }
+  .timer-controls { display: flex; gap: 0.6rem; justify-content: center; flex-wrap: wrap; }
+  .timer-controls button { min-width: 100px; }
+  .timer-running-tag { text-align: center; font-size: 0.75rem; color: var(--accent-high); font-weight: 700; margin-bottom: 0.2rem; }
+
+  /* ---- Journal ---- */
+  .journal-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 0.9rem; }
+  .journal-card { position: relative; border-radius: 16px; padding: 0.9rem; min-height: 140px; display: flex; flex-direction: column; justify-content: flex-end; color: white; overflow: hidden; box-shadow: 0 6px 14px rgba(0,0,0,0.12); background-size: cover; background-position: center; }
+  .journal-card::before { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(0,0,0,0) 30%, rgba(0,0,0,0.55) 100%); }
+  .journal-card.no-photo::before { background: rgba(0,0,0,0.08); }
+  .journal-card > * { position: relative; z-index: 1; }
+  .journal-duration { font-family: 'Fredoka One', cursive; font-size: 1.1rem; }
+  .journal-meta { font-size: 0.7rem; opacity: 0.95; }
+  .journal-note { font-size: 0.72rem; margin-top: 0.2rem; overflow-wrap: anywhere; }
+
+  /* ---- Modal / overlay ---- */
+  .overlay { position: fixed; inset: 0; background: rgba(47, 62, 70, 0.5); display: none; align-items: center; justify-content: center; padding: 1.2rem; z-index: 100; }
+  .overlay.open { display: flex; }
+  .modal { background: var(--card-bg); border-radius: var(--border-radius); border: 2px solid #cad2c5; padding: 1.8rem; width: 100%; max-width: 480px; max-height: 88vh; overflow-y: auto; box-shadow: 0 20px 40px rgba(0,0,0,0.18); }
+  .modal h3 { font-family: 'Fredoka One', cursive; color: var(--primary); font-size: 1.4rem; margin-bottom: 0.4rem; }
+  .modal p.modal-sub { color: #6b7d76; font-size: 0.85rem; margin-bottom: 1rem; }
+  .modal .input-group { margin-bottom: 0.8rem; }
+  .modal-close { margin-top: 1.2rem; width: 100%; }
+
+  /* Roster popup — the "cute" one */
+  .confetti-row { text-align: center; font-size: 1.6rem; margin-bottom: 0.3rem; letter-spacing: 0.3rem; }
+  .roster-member { display: flex; gap: 0.8rem; margin-bottom: 1rem; padding: 0.8rem; border-radius: 16px; background: var(--bg); border: 1px solid var(--line-color); }
+  .roster-member.newest { border: 2px solid var(--accent-high); background: #fff3ee; }
+  .avatar { width: 42px; height: 42px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: 700; font-family: 'Fredoka One', cursive; flex-shrink: 0; font-size: 1rem; }
+  .roster-name-row { display: flex; align-items: center; gap: 0.4rem; margin-bottom: 0.35rem; }
+  .roster-name { font-weight: 700; color: var(--primary-hover); }
+  .new-tag { background: var(--accent-high); color: white; font-size: 0.6rem; padding: 0.12rem 0.45rem; border-radius: 8px; font-weight: 700; }
+  .roster-tasks { list-style: none; display: flex; flex-direction: column; gap: 0.3rem; }
+  .roster-tasks li { font-size: 0.8rem; display: flex; align-items: center; gap: 0.4rem; }
+  .roster-tasks li.completed { color: #a0aab0; text-decoration: line-through; }
+  .roster-tasks .none { font-size: 0.78rem; color: #a0aab0; font-style: italic; }
+  .priority-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+
+  /* Decorate modal */
+  .swatch-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 0.5rem; margin-bottom: 1rem; }
+  .swatch { aspect-ratio: 1; border-radius: 10px; cursor: pointer; border: 3px solid transparent; }
+  .swatch.selected { border-color: var(--primary-hover); transform: scale(1.05); }
+  .photo-upload-row { display: flex; align-items: center; gap: 0.7rem; margin-bottom: 1rem; }
+  .photo-preview { width: 60px; height: 60px; border-radius: 10px; object-fit: cover; border: 2px solid var(--line-color); display: none; }
+  .photo-preview.shown { display: block; }
+  .decorate-duration { text-align: center; font-family: 'Fredoka One', cursive; color: var(--primary); font-size: 1.6rem; margin-bottom: 0.6rem; }
+
+  @media (max-width: 480px) { .banner-actions input { width: 110px; } .swatch-grid { grid-template-columns: repeat(4, 1fr); } }
+
+  /* ---- Full-page login gate ---- */
+  .login-page { position: fixed; inset: 0; background: linear-gradient(160deg, var(--bg), #dcebe3); z-index: 300; display: flex; align-items: center; justify-content: center; padding: 1.5rem; overflow-y: auto; }
+  .login-page.hidden { display: none; }
+  .login-card { background: var(--card-bg); border-radius: var(--border-radius); border: 2px solid #cad2c5; padding: 2.4rem 2rem; max-width: 420px; width: 100%; box-shadow: 0 20px 40px rgba(0,0,0,0.12); text-align: center; }
+  .login-card .clover-big { font-size: 2.6rem; margin-bottom: 0.3rem; }
+  .login-card h1 { font-family: 'Fredoka One', cursive; color: var(--primary); font-size: 1.7rem; margin-bottom: 0.4rem; }
+  .login-card p.login-sub { color: #6b7d76; font-size: 0.85rem; margin-bottom: 1.5rem; }
+  .login-card .input-group { text-align: left; margin-bottom: 0; }
+  .login-card label { font-size: 0.78rem; font-weight: 700; color: var(--primary-hover); }
+  .login-error { color: var(--accent-high); font-size: 0.78rem; text-align: left; min-height: 1rem; margin: -0.4rem 0 0.8rem; }
+  .login-note { font-size: 0.68rem; color: #8a9691; margin-top: 1.2rem; line-height: 1.45; }
+  #appRoot.hidden { display: none; }
+
+  /* ---- Full-page popup (used for the join/roster page instead of a small modal) ---- */
+  .overlay.fullpage { background: var(--bg); padding: 0; align-items: stretch; }
+  .overlay.fullpage .modal { max-width: 640px; width: 100%; margin: 0 auto; max-height: none; height: 100%; border-radius: 0; border: none; box-shadow: none; display: flex; flex-direction: column; padding: 2.2rem 1.5rem; overflow-y: auto; }
+  .overlay.fullpage .modal-close { margin-top: auto; }
+</style>
+</head>
+<body>
+
+<!-- Full-page login gate: name + email required before entering -->
+<div class="login-page" id="loginPage">
+  <div class="login-card">
+    <div class="clover-big">🍀</div>
+    <h1>Welcome to Lucky Clover</h1>
+    <p class="login-sub">Sign in to enter your study notebook.</p>
+    <div class="input-group">
+      <label for="loginName">Name</label>
+      <input type="text" id="loginName" placeholder="Your name" maxlength="40">
+    </div>
+    <div class="input-group" style="margin-top:0.8rem;">
+      <label for="loginEmail">Email</label>
+      <input type="email" id="loginEmail" placeholder="you@example.com">
+    </div>
+    <div class="login-error" id="loginError"></div>
+    <button style="width:100%; margin-top:0.4rem;" onclick="submitLogin()">Enter Notebook ☘️</button>
+    <p class="login-note">Your email stays on your device only — it's never shared with your group. Only your name is visible to others. This form checks your details look valid but doesn't send a verification code.</p>
+  </div>
+</div>
+
+<div class="container" id="appRoot">
+  <div class="group-banner">
+    <div class="group-info">
+      <span class="sync-dot" id="syncDot"></span>
+      👥 Group Code: <span id="currentGroupDisplay" class="code-badge">----</span>
+    </div>
+    <div class="banner-actions">
+      <input type="text" id="groupCodeInput" placeholder="Enter code">
+      <button class="secondary" onclick="handleJoinClick()">Join Group ☘️</button>
+      <button onclick="handleCreateClick()">New Code ➕</button>
+    </div>
+  </div>
+
+  <header>
+    <h1>🍀 Lucky Clover Notebook 🍀</h1>
+    <p class="subtitle">Share your study notebook with friends — everyone in the same group code sees the same list.</p>
+    <div class="whoami" id="whoami"></div>
+    <div class="progress-container"><div id="progressBar" class="progress-bar"></div></div>
+    <div class="progress-label" id="progressLabel">No tasks yet</div>
+  </header>
+
+  <div class="grid">
+    <div class="card">
+      <h2>📌 Notebook Tasks <span class="count-pill" id="taskCount">0</span></h2>
+      <div class="input-group">
+        <input type="text" id="taskInput" placeholder="Write on a line..." maxlength="140">
+        <select id="priorityInput">
+          <option value="High">🔥 High Priority (Do First!)</option>
+          <option value="Medium" selected>☘️ Medium Priority (Do Next)</option>
+          <option value="Low">☁️ Low Priority (Optional)</option>
+        </select>
+        <button onclick="addTask()">Add Task 📝</button>
+      </div>
+      <div class="lined-notebook"><ul id="taskList" class="todo-list"></ul></div>
+    </div>
+
+    <div class="card">
+      <h2>🗓️ Exam Calendar <span class="count-pill" id="examCount">0</span></h2>
+      <div class="input-group">
+        <input type="text" id="examSubject" placeholder="Subject (e.g., History Exam)" maxlength="80">
+        <input type="date" id="examDate">
+        <button onclick="addExam()">Add Exam 📅</button>
+      </div>
+      <div class="lined-notebook"><ul id="examList" class="todo-list"></ul></div>
+    </div>
+  </div>
+
+  <!-- Subjects: notes + timer + decorated journal -->
+  <div class="card subjects-card">
+    <h2>📚 Subjects, Notes &amp; Study Journal</h2>
+
+    <div class="subject-chip-row" id="subjectChipRow"></div>
+    <div class="add-subject-row">
+      <input type="text" id="newSubjectInput" placeholder="Add a subject (e.g., Chemistry)" maxlength="40">
+      <button onclick="addSubject()">Add ➕</button>
+    </div>
+
+    <div id="subjectPanel"></div>
+  </div>
+
+  <div class="status-line" id="statusLine">Loading your group's notebook...
+    <button class="ghost hidden" id="retrySyncBtn" onclick="retrySync()" style="padding:0; font-size:0.72rem;">Retry</button>
+  </div>
+</div>
+
+<!-- Name prompt modal -->
+<div class="overlay" id="nameOverlay">
+  <div class="modal">
+    <h3>What's your name? ☘️</h3>
+    <p class="modal-sub">So your friends know it's you when you join their notebook.</p>
+    <div class="input-group"><input type="text" id="nameInput" placeholder="Your name" maxlength="40"></div>
+    <button style="width:100%" onclick="confirmName()">Continue</button>
+  </div>
+</div>
+
+<!-- Roster popup — opens as a full page, not a small modal -->
+<div class="overlay fullpage" id="rosterOverlay">
+  <div class="modal">
+    <div class="confetti-row" id="confettiRow">🍀 ✨ 🍀</div>
+    <h3 id="rosterTitle" style="text-align:center;">Group Roster</h3>
+    <p class="modal-sub" id="rosterSub" style="text-align:center;">Everyone in this notebook, and what they're working on.</p>
+    <div id="rosterList"></div>
+    <button class="modal-close" onclick="closeRoster()">Yay, got it! ☘️</button>
+  </div>
+</div>
+
+<!-- Decorate study session modal -->
+<div class="overlay" id="decorateOverlay">
+  <div class="modal">
+    <h3>Nice work studying! 🎉</h3>
+    <p class="modal-sub" id="decorateSub">Decorate this study session before you save it.</p>
+    <div class="decorate-duration" id="decorateDuration">00:00</div>
+
+    <div class="subsection" style="margin-bottom:1rem;">
+      <h4>🎨 Pick a background</h4>
+      <div class="swatch-grid" id="swatchGrid"></div>
+    </div>
+
+    <div class="subsection" style="margin-bottom:1rem;">
+      <h4>📷 Add a photo (optional)</h4>
+      <div class="photo-upload-row">
+        <input type="file" id="photoInput" accept="image/*">
+        <img id="photoPreview" class="photo-preview" alt="Preview">
+      </div>
+    </div>
+
+    <div class="input-group">
+      <textarea id="decorateNote" placeholder="How did the session go? (optional)" maxlength="200" style="min-height:60px;"></textarea>
+    </div>
+
+    <button style="width:100%" onclick="saveJournalEntry()">Save to Journal 🍀</button>
+    <button class="ghost" style="width:100%; text-align:center;" onclick="discardSession()">Discard this session</button>
+  </div>
+</div>
+
+<script>
+  // ============================================================
+  // STORAGE — runs entirely in the browser, no backend needed
+  // ============================================================
+  // This app was built for Claude's artifact-only `window.storage` API,
+  // which doesn't exist outside claude.ai. To keep this simple to host
+  // (GitHub Pages, any static host — no server to run), everything is
+  // stored in this browser's localStorage. That means group notebooks
+  // are per-device: a group code namespaces the data locally, but two
+  // different devices using the same code won't see each other's
+  // changes. If you want real cross-device sync later, that needs a
+  // backend of some kind (self-hosted or otherwise) for the "shared"
+  // keys to talk to.
+  window.storage = {
+    async get(key, shared) {
+      const v = localStorage.getItem('lc:' + key);
+      if (v === null) throw new Error(`Key not found: ${key}`);
+      return { key, value: v, shared: !!shared };
+    },
+    async set(key, value, shared) {
+      localStorage.setItem('lc:' + key, value);
+      return { key, value, shared: !!shared };
+    },
+    async delete(key, shared) {
+      const existed = localStorage.getItem('lc:' + key) !== null;
+      localStorage.removeItem('lc:' + key);
+      return { key, deleted: existed, shared: !!shared };
+    },
+    async list(prefix, shared) {
+      const keys = [];
+      for (let i = 0; i < localStorage.length; i++) {
+        const k = localStorage.key(i);
+        if (k && k.startsWith('lc:') && (!prefix || k.slice(3).startsWith(prefix))) keys.push(k.slice(3));
+      }
+      return { keys, prefix, shared: !!shared };
+    }
+  };
+
+  // ============ STATE ============
+  let activeGroup = '1234';
+  let myName = null;
+  let tasks = [];
+  let exams = [];
+  let members = [];
+  let subjects = [];
+  let notesMap = {};      // { subject: { text, updatedBy, updatedAt } }
+  let sessions = [];      // [{ id, subject, author, durationSeconds, endedAt, note, photo, swatch }]
+  let activeSubject = null;
+  let lastKnownMemberCount = 0;
+  let pendingAction = null;
+  let pollTimer = null;
+
+  let timerRunning = false;
+  let timerSubject = null;
+  let timerStartedAt = null;
+  let timerAccumSeconds = 0;
+  let timerIntervalId = null;
+  let pendingPhotoDataUrl = null;
+  let pendingSwatch = 'mint';
+
+  const SWATCHES = [
+    { id: 'mint', css: 'linear-gradient(135deg,#d8f3dc,#95d5b2)' },
+    { id: 'peach', css: 'linear-gradient(135deg,#ffe5d9,#ffcad4)' },
+    { id: 'sky', css: 'linear-gradient(135deg,#caf0f8,#90e0ef)' },
+    { id: 'lavender', css: 'linear-gradient(135deg,#e0c3fc,#8ec5fc)' },
+    { id: 'sun', css: 'linear-gradient(135deg,#fff3b0,#ffd166)' },
+    { id: 'clover', css: 'linear-gradient(135deg,#b7e4c7,#52796f)' }
+  ];
+  const AVATAR_COLORS = ['#52796f', '#e76f51', '#e9c46a', '#9d8df1', '#f4978e', '#457b9d', '#84a98c'];
+
+  const syncDot = document.getElementById('syncDot');
+  const statusLine = document.getElementById('statusLine');
+  function setSync(state, msg) {
+    syncDot.className = `sync-dot ${state === 'syncing' ? 'syncing' : state === 'error' ? 'error' : ''}`;
+    if (msg) statusLine.childNodes[0].textContent = msg;
+    document.getElementById('retrySyncBtn').classList.toggle('hidden', state !== 'error');
+  }
+
+  async function retrySync() {
+    await loadGroupData();
+  }
+
+  const presetSeed = {
+    '1234': {
+      tasks: [
+        { text: 'Math Ch. 4 Exercises', priority: 'High', completed: false, id: 1, author: 'Alex' },
+        { text: 'Read Bio Ch. 2', priority: 'Medium', completed: true, id: 2, author: 'Sam' },
+        { text: 'Review Chemistry Flashcards', priority: 'High', completed: false, id: 3, author: 'Alex' }
+      ],
+      exams: [
+        { subject: 'Math Midterm', date: '2026-09-01', id: 101 },
+        { subject: 'Biology Quiz', date: '2026-08-25', id: 102 }
+      ],
+      members: [
+        { name: 'Alex', joinedAt: Date.now() - 100000 },
+        { name: 'Sam', joinedAt: Date.now() - 50000 }
+      ],
+      subjects: ['Math', 'Biology', 'Chemistry'],
+      notesMap: {},
+      sessions: []
+    }
+  };
+
+  // ============ LOGIN GATE (name + email, kept local to this device) ============
+  function isValidEmail(v) { return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v); }
+
+  async function checkLogin() {
+    let login = null;
+    try {
+      const saved = await window.storage.get('my-login', false);
+      login = saved ? JSON.parse(saved.value) : null;
+    } catch (e) { login = null; }
+
+    if (login && login.name && login.email) {
+      myName = login.name;
+      document.getElementById('loginPage').classList.add('hidden');
+      document.getElementById('appRoot').classList.remove('hidden');
+      return true;
+    }
+    document.getElementById('loginPage').classList.remove('hidden');
+    document.getElementById('appRoot').classList.add('hidden');
+    return false;
+  }
+
+  async function submitLogin() {
+    const name = document.getElementById('loginName').value.trim();
+    const email = document.getElementById('loginEmail').value.trim();
+    const errorEl = document.getElementById('loginError');
+
+    if (!name) { errorEl.textContent = 'Please enter your name.'; return; }
+    if (!isValidEmail(email)) { errorEl.textContent = 'Please enter a valid email address.'; return; }
+    errorEl.textContent = '';
+
+    try {
+      // Stored locally only (shared: false) — never written to any shared group key.
+      await window.storage.set('my-login', JSON.stringify({ name, email }), false);
+    } catch (e) {
+      errorEl.textContent = 'Could not sign you in — check your connection and try again.';
+      return;
+    }
+
+    myName = name;
+    document.getElementById('loginPage').classList.add('hidden');
+    document.getElementById('appRoot').classList.remove('hidden');
+    await startApp();
+  }
+
+  // ============ INIT ============
+  async function init() {
+    const loggedIn = await checkLogin();
+    if (!loggedIn) return; // wait for submitLogin()
+    await startApp();
+  }
+
+  async function startApp() {
+    setSync('syncing', 'Loading your group\'s notebook...');
+    try {
+      const savedGroup = await window.storage.get('active-group', false);
+      if (savedGroup && savedGroup.value) activeGroup = savedGroup.value;
+    } catch (e) {}
+
+    updateGroupUI();
+    updateWhoAmI();
+    await loadGroupData();
+    startPolling();
+    renderSwatchGrid();
+  }
+
+  async function loadGroupData() {
+    setSync('syncing', 'Syncing group notebook...');
+    try {
+      let loadedTasks = null, loadedExams = null, loadedMembers = null, loadedSubjects = null, loadedNotes = null, loadedSessions = null;
+
+      try { const t = await window.storage.get(`tasks:${activeGroup}`, true); loadedTasks = t ? JSON.parse(t.value) : null; } catch (e) {}
+      try { const ex = await window.storage.get(`exams:${activeGroup}`, true); loadedExams = ex ? JSON.parse(ex.value) : null; } catch (e) {}
+      try { const mem = await window.storage.get(`members:${activeGroup}`, true); loadedMembers = mem ? JSON.parse(mem.value) : null; } catch (e) {}
+      try { const sub = await window.storage.get(`subjects:${activeGroup}`, true); loadedSubjects = sub ? JSON.parse(sub.value) : null; } catch (e) {}
+      try { const nt = await window.storage.get(`notes:${activeGroup}`, true); loadedNotes = nt ? JSON.parse(nt.value) : null; } catch (e) {}
+      try { const ss = await window.storage.get(`sessions:${activeGroup}`, true); loadedSessions = ss ? JSON.parse(ss.value) : null; } catch (e) {}
+
+      if (loadedTasks === null && presetSeed[activeGroup]) {
+        const seed = presetSeed[activeGroup];
+        loadedTasks = seed.tasks; loadedExams = seed.exams; loadedMembers = seed.members;
+        loadedSubjects = seed.subjects; loadedNotes = seed.notesMap; loadedSessions = seed.sessions;
+        await saveTasks(loadedTasks, false);
+        await saveExams(loadedExams, false);
+        await saveMembers(loadedMembers, false);
+        await saveSubjects(loadedSubjects, false);
+        await saveNotesMap(loadedNotes, false);
+        await saveSessions(loadedSessions, false);
+      }
+
+      tasks = loadedTasks || [];
+      exams = loadedExams || [];
+      members = loadedMembers || [];
+      subjects = loadedSubjects || [];
+      notesMap = loadedNotes || {};
+      sessions = loadedSessions || [];
+      lastKnownMemberCount = members.length;
+      if (!activeSubject && subjects.length) activeSubject = subjects[0];
+
+      setSync('ok', `Synced with group ${activeGroup}. This notebook is shared with anyone who joins the same code.`);
+    } catch (e) {
+      tasks = []; exams = []; members = []; subjects = []; notesMap = {}; sessions = [];
+      setSync('error', 'Could not load this group\'s notebook. Try again or check your connection.');
+    }
+    renderTasks();
+    renderExams();
+    renderSubjectChips();
+    renderSubjectPanel();
+  }
+
+  // ============ NAME HANDLING ============
+  function updateWhoAmI() {
+    const el = document.getElementById('whoami');
+    el.innerHTML = myName
+      ? `You're in as <strong>${escapeHtml(myName)}</strong> <button class="secondary" onclick="openNamePrompt(null)">change</button>`
+      : '';
+  }
+  function openNamePrompt(action) {
+    pendingAction = action;
+    document.getElementById('nameInput').value = myName || '';
+    document.getElementById('nameOverlay').classList.add('open');
+  }
+  async function confirmName() {
+    const val = document.getElementById('nameInput').value.trim();
+    if (!val) return;
+    myName = val;
+    try { await window.storage.set('my-name', myName, false); } catch (e) {}
+    document.getElementById('nameOverlay').classList.remove('open');
+    updateWhoAmI();
+    if (pendingAction === 'join') await joinGroup();
+    else if (pendingAction === 'create') await createGroup();
+    pendingAction = null;
+  }
+  function handleJoinClick() {
+    const inputCode = document.getElementById('groupCodeInput').value.trim();
+    if (!inputCode) return;
+    if (!myName) { openNamePrompt('join'); return; }
+    joinGroup();
+  }
+  function handleCreateClick() {
+    if (!myName) { openNamePrompt('create'); return; }
+    createGroup();
+  }
+
+  // ============ GROUP LOGIC ============
+  async function createGroup() {
+    const newCode = Math.floor(1000 + Math.random() * 9000).toString();
+    activeGroup = newCode;
+    setSync('syncing', 'Creating new group...');
+    try { await window.storage.set('active-group', activeGroup, false); } catch (e) {}
+
+    updateGroupUI();
+    tasks = []; exams = []; members = []; subjects = []; notesMap = {}; sessions = []; activeSubject = null;
+    renderTasks(); renderExams(); renderSubjectChips(); renderSubjectPanel();
+
+    await addSelfAsMember();
+    setSync('ok', `New group created: ${activeGroup}. Share this code with friends so they can join!`);
+    showRoster({ highlightNewest: false });
+    startPolling();
+  }
+
+  async function joinGroup() {
+    const inputEl = document.getElementById('groupCodeInput');
+    const inputCode = inputEl.value.trim();
+    if (!inputCode) return;
+    activeGroup = inputCode;
+    setSync('syncing', `Joining group ${activeGroup}...`);
+    try { await window.storage.set('active-group', activeGroup, false); } catch (e) {}
+    inputEl.value = '';
+    updateGroupUI();
+    await loadGroupData();
+    await addSelfAsMember();
+    showRoster({ highlightNewest: true, newestName: myName });
+    startPolling();
+  }
+
+  async function addSelfAsMember() {
+    let currentMembers = members;
+    try {
+      const mem = await window.storage.get(`members:${activeGroup}`, true);
+      currentMembers = mem ? JSON.parse(mem.value) : [];
+    } catch (e) { currentMembers = members; }
+    if (!currentMembers.some(m => m.name === myName)) {
+      currentMembers = [...currentMembers, { name: myName, joinedAt: Date.now() }];
+    }
+    await saveMembers(currentMembers);
+    lastKnownMemberCount = currentMembers.length;
+  }
+
+  function updateGroupUI() { document.getElementById('currentGroupDisplay').innerText = activeGroup; }
+
+  // ============ STORAGE HELPERS (shared) ============
+  async function saveTasks(list, updateUi = true) {
+    tasks = list; if (updateUi) renderTasks();
+    try { await window.storage.set(`tasks:${activeGroup}`, JSON.stringify(tasks), true); }
+    catch (e) { setSync('error', 'Could not save that change.'); }
+  }
+  async function saveExams(list, updateUi = true) {
+    exams = list; if (updateUi) renderExams();
+    try { await window.storage.set(`exams:${activeGroup}`, JSON.stringify(exams), true); }
+    catch (e) { setSync('error', 'Could not save that exam.'); }
+  }
+  async function saveMembers(list) {
+    members = list;
+    try { await window.storage.set(`members:${activeGroup}`, JSON.stringify(members), true); }
+    catch (e) { setSync('error', 'Could not update the member list.'); }
+  }
+  async function saveSubjects(list, updateUi = true) {
+    subjects = list; if (updateUi) { renderSubjectChips(); renderSubjectPanel(); }
+    try { await window.storage.set(`subjects:${activeGroup}`, JSON.stringify(subjects), true); }
+    catch (e) { setSync('error', 'Could not save that subject.'); }
+  }
+  async function saveNotesMap(map, updateUi = true) {
+    notesMap = map; if (updateUi) renderSubjectPanel();
+    try { await window.storage.set(`notes:${activeGroup}`, JSON.stringify(notesMap), true); }
+    catch (e) { setSync('error', 'Could not save that note.'); }
+  }
+  async function saveSessions(list, updateUi = true) {
+    sessions = list; if (updateUi) renderSubjectPanel();
+    try { await window.storage.set(`sessions:${activeGroup}`, JSON.stringify(sessions), true); }
+    catch (e) { setSync('error', 'Could not save that study session — it may be too large.'); }
+  }
+
+  // ============ LIVE POLLING ============
+  function startPolling() {
+    if (pollTimer) clearInterval(pollTimer);
+    pollTimer = setInterval(checkForNewMembers, 4000);
+  }
+  async function checkForNewMembers() {
+    try {
+      const mem = await window.storage.get(`members:${activeGroup}`, true);
+      const latest = mem ? JSON.parse(mem.value) : [];
+      if (latest.length > lastKnownMemberCount) {
+        const newest = latest[latest.length - 1];
+        members = latest; lastKnownMemberCount = latest.length;
+        try { const t = await window.storage.get(`tasks:${activeGroup}`, true); tasks = t ? JSON.parse(t.value) : []; renderTasks(); } catch (e) {}
+        if (newest.name !== myName) showRoster({ highlightNewest: true, newestName: newest.name });
+      } else if (latest.length !== lastKnownMemberCount) {
+        members = latest; lastKnownMemberCount = latest.length;
+      }
+    } catch (e) {}
+  }
+
+  // ============ ROSTER MODAL (cute version) ============
+  function getAvatarColor(name) {
+    let hash = 0;
+    for (let i = 0; i < name.length; i++) hash = name.charCodeAt(i) + ((hash << 5) - hash);
+    return AVATAR_COLORS[Math.abs(hash) % AVATAR_COLORS.length];
+  }
+  function getInitials(name) {
+    return name.trim().split(/\s+/).map(p => p[0]).slice(0, 2).join('').toUpperCase();
+  }
+  const priorityDotColor = { High: 'var(--accent-high)', Medium: 'var(--accent-med)', Low: 'var(--accent-low)' };
+
+  function showRoster({ highlightNewest, newestName } = {}) {
+    document.getElementById('rosterTitle').textContent = highlightNewest && newestName
+      ? `${newestName} joined the group! 🎉` : 'Group Roster ☘️';
+    document.getElementById('rosterSub').textContent = `Everyone in group ${activeGroup}, and what they're working on.`;
+    document.getElementById('confettiRow').textContent = highlightNewest ? '🎉 🍀 ✨ 🍀 🎉' : '🍀 ✨ 🍀';
+
+    const listEl = document.getElementById('rosterList');
+    listEl.innerHTML = '';
+    if (members.length === 0) {
+      listEl.innerHTML = `<p class="empty-state">No members yet.</p>`;
+    } else {
+      members.forEach(member => {
+        const memberTasks = tasks.filter(t => t.author === member.name);
+        const isNewest = highlightNewest && member.name === newestName;
+        const div = document.createElement('div');
+        div.className = `roster-member ${isNewest ? 'newest' : ''}`;
+        div.innerHTML = `
+          <div class="avatar" style="background:${getAvatarColor(member.name)}">${escapeHtml(getInitials(member.name))}</div>
+          <div style="flex:1; min-width:0;">
+            <div class="roster-name-row">
+              <span class="roster-name">${escapeHtml(member.name)}</span>
+              ${isNewest ? '<span class="new-tag">NEW ☘️</span>' : ''}
+            </div>
+            <ul class="roster-tasks">
+              ${memberTasks.length
+                ? memberTasks.map(t => `<li class="${t.completed ? 'completed' : ''}"><span class="priority-dot" style="background:${priorityDotColor[t.priority]}"></span>${escapeHtml(t.text)}</li>`).join('')
+                : `<li class="none">No tasks added yet 🌱</li>`}
+            </ul>
+          </div>`;
+        listEl.appendChild(div);
+      });
+    }
+    document.getElementById('rosterOverlay').classList.add('open');
+  }
+  function closeRoster() { document.getElementById('rosterOverlay').classList.remove('open'); }
+
+  // ============ TASKS ============
+  async function addTask() {
+    const input = document.getElementById('taskInput');
+    const taskText = input.value.trim();
+    const priority = document.getElementById('priorityInput').value;
+    if (!taskText) return;
+    if (!myName) { openNamePrompt(null); return; }
+    const order = { High: 1, Medium: 2, Low: 3 };
+    const newTasks = [...tasks, { text: taskText, priority, completed: false, id: Date.now(), author: myName }]
+      .sort((a, b) => order[a.priority] - order[b.priority]);
+    input.value = '';
+    await saveTasks(newTasks);
+  }
+  function renderTasks() {
+    const taskList = document.getElementById('taskList');
+    taskList.innerHTML = '';
+    document.getElementById('taskCount').textContent = tasks.length;
+    if (tasks.length === 0) taskList.innerHTML = `<li class="empty-state">No tasks yet — add the first one above! ☘️</li>`;
+    let completedCount = 0;
+    tasks.forEach(task => {
+      if (task.completed) completedCount++;
+      const li = document.createElement('li');
+      li.className = `todo-item ${task.completed ? 'completed' : ''}`;
+      li.innerHTML = `
+        <div class="todo-left">
+          <div class="custom-checkbox" onclick="toggleTask(${task.id})"></div>
+          <span class="task-text">${escapeHtml(task.text)}</span>
+          ${task.author ? `<span class="task-author">— ${escapeHtml(task.author)}</span>` : ''}
+          <span class="badge priority-${task.priority}">${task.priority}</span>
+        </div>
+        <button class="delete-btn" onclick="deleteTask(${task.id})" aria-label="Delete task">✖</button>`;
+      taskList.appendChild(li);
+    });
+    const progress = tasks.length ? (completedCount / tasks.length) * 100 : 0;
+    document.getElementById('progressBar').style.width = `${progress}%`;
+    document.getElementById('progressLabel').textContent = tasks.length ? `${completedCount} of ${tasks.length} tasks done` : 'No tasks yet';
+  }
+  async function toggleTask(id) { await saveTasks(tasks.map(t => t.id === id ? { ...t, completed: !t.completed } : t)); }
+  async function deleteTask(id) { await saveTasks(tasks.filter(t => t.id !== id)); }
+
+  // ============ EXAMS ============
+  async function addExam() {
+    const subjectInput = document.getElementById('examSubject');
+    const dateInput = document.getElementById('examDate');
+    const subject = subjectInput.value.trim();
+    const date = dateInput.value;
+    if (!subject || !date) return;
+    const newExams = [...exams, { subject, date, id: Date.now() }].sort((a, b) => new Date(a.date) - new Date(b.date));
+    subjectInput.value = ''; dateInput.value = '';
+    await saveExams(newExams);
+  }
+  function renderExams() {
+    const examList = document.getElementById('examList');
+    examList.innerHTML = '';
+    document.getElementById('examCount').textContent = exams.length;
+    if (exams.length === 0) { examList.innerHTML = `<li class="empty-state">No exams on the calendar yet.</li>`; return; }
+    const today = new Date(); today.setHours(0, 0, 0, 0);
+    exams.forEach(exam => {
+      const examDate = new Date(exam.date);
+      const diffDays = Math.ceil((examDate - today) / (1000 * 60 * 60 * 24));
+      let countdownText = `${diffDays} days left`, countdownClass = 'countdown-later';
+      if (diffDays <= 0) { countdownText = 'Passed 💫'; countdownClass = 'countdown-past'; }
+      if (diffDays === 0) { countdownText = 'Today! 🎯'; countdownClass = 'countdown-today'; }
+      else if (diffDays > 0 && diffDays <= 3) countdownClass = 'countdown-soon';
+      const li = document.createElement('li');
+      li.className = 'todo-item';
+      li.innerHTML = `
+        <div class="todo-left"><strong>${escapeHtml(exam.subject)}</strong><small style="color:#888;">${exam.date}</small></div>
+        <div style="display:flex; align-items:center; gap:0.5rem;">
+          <span class="badge ${countdownClass}">${countdownText}</span>
+          <button class="delete-btn" onclick="deleteExam(${exam.id})" aria-label="Delete exam">✖</button>
+        </div>`;
+      examList.appendChild(li);
+    });
+  }
+  async function deleteExam(id) { await saveExams(exams.filter(e => e.id !== id)); }
+
+  // ============ SUBJECTS ============
+  async function addSubject() {
+    const input = document.getElementById('newSubjectInput');
+    const name = input.value.trim();
+    if (!name) return;
+    if (subjects.some(s => s.toLowerCase() === name.toLowerCase())) { input.value = ''; activeSubject = subjects.find(s => s.toLowerCase() === name.toLowerCase()); renderSubjectChips(); renderSubjectPanel(); return; }
+    const newSubjects = [...subjects, name];
+    input.value = '';
+    activeSubject = name;
+    await saveSubjects(newSubjects);
+  }
+  function selectSubject(name) { activeSubject = name; renderSubjectChips(); renderSubjectPanel(); }
+  function renderSubjectChips() {
+    const row = document.getElementById('subjectChipRow');
+    row.innerHTML = '';
+    if (subjects.length === 0) { row.innerHTML = `<span class="empty-state">Add your first subject below to start taking notes and timing study sessions.</span>`; return; }
+    subjects.forEach(s => {
+      const chip = document.createElement('div');
+      chip.className = `subject-chip ${s === activeSubject ? 'active' : ''}`;
+      chip.textContent = s;
+      chip.onclick = () => selectSubject(s);
+      row.appendChild(chip);
+    });
+  }
+
+  function formatDuration(totalSeconds) {
+    const h = Math.floor(totalSeconds / 3600);
+    const m = Math.floor((totalSeconds % 3600) / 60);
+    const s = Math.floor(totalSeconds % 60);
+    if (h > 0) return `${h}h ${m}m`;
+    if (m > 0) return `${m}m ${s}s`;
+    return `${s}s`;
+  }
+  function formatTimerClock(totalSeconds) {
+    const h = Math.floor(totalSeconds / 3600);
+    const m = Math.floor((totalSeconds % 3600) / 60);
+    const s = Math.floor(totalSeconds % 60);
+    const pad = n => String(n).padStart(2, '0');
+    return h > 0 ? `${pad(h)}:${pad(m)}:${pad(s)}` : `${pad(m)}:${pad(s)}`;
+  }
+  function totalTimeForSubject(subject) {
+    return sessions.filter(s => s.subject === subject).reduce((sum, s) => sum + s.durationSeconds, 0);
+  }
+
+  function renderSubjectPanel() {
+    const panel = document.getElementById('subjectPanel');
+    if (!activeSubject) { panel.innerHTML = ''; return; }
+
+    const note = notesMap[activeSubject] || { text: '', updatedBy: '', updatedAt: null };
+    const totalSeconds = totalTimeForSubject(activeSubject);
+    const isTimerForThisSubject = timerRunning && timerSubject === activeSubject;
+    const subjectSessions = sessions.filter(s => s.subject === activeSubject).sort((a, b) => b.endedAt - a.endedAt);
+
+    panel.innerHTML = `
+      <div class="subject-panel">
+        <div class="subject-panel-header">
+          <h3>📖 ${escapeHtml(activeSubject)}</h3>
+          <span class="subject-total-time">⏱️ Total studied: ${formatDuration(totalSeconds)}</span>
+        </div>
+
+        <div class="subsection">
+          <h4>📝 Notes</h4>
+          <div class="input-group" style="margin-bottom:0.4rem;">
+            <textarea id="notesTextarea" placeholder="Jot down anything worth remembering for ${escapeHtml(activeSubject)}...">${escapeHtml(note.text)}</textarea>
+          </div>
+          <button class="secondary" onclick="saveNotes()">Save Notes 💾</button>
+          ${note.updatedBy ? `<div class="notes-meta">Last updated by ${escapeHtml(note.updatedBy)}</div>` : ''}
+        </div>
+
+        <div class="subsection">
+          <h4>⏱️ Study Timer</h4>
+          ${isTimerForThisSubject ? `<div class="timer-running-tag">Studying now...</div>` : ''}
+          <div class="timer-display" id="timerDisplay">${formatTimerClock(isTimerForThisSubject ? currentTimerSeconds() : 0)}</div>
+          <div class="timer-controls">
+            ${!timerRunning
+              ? `<button onclick="startTimer('${escapeJs(activeSubject)}')">▶️ Start</button>`
+              : isTimerForThisSubject
+                ? `<button class="secondary" onclick="stopTimer()">⏹️ Stop &amp; Save</button>`
+                : `<button disabled>▶️ Start</button>`
+            }
+          </div>
+          ${timerRunning && !isTimerForThisSubject ? `<div class="notes-meta" style="text-align:center; margin-top:0.4rem;">Timer running for ${escapeHtml(timerSubject)} — stop it first to time this subject.</div>` : ''}
+        </div>
+
+        <div class="subsection">
+          <h4>🎨 Study Journal</h4>
+          ${subjectSessions.length
+            ? `<div class="journal-grid">${subjectSessions.map(renderJournalCard).join('')}</div>`
+            : `<p class="empty-state">No study sessions yet — start the timer above and stop it when you're done!</p>`}
+        </div>
+      </div>`;
+  }
+
+  function renderJournalCard(session) {
+    const swatch = SWATCHES.find(s => s.id === session.swatch) || SWATCHES[0];
+    const bgStyle = session.photo ? `background-image:url('${session.photo}')` : `background:${swatch.css}`;
+    const dateStr = new Date(session.endedAt).toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
+    return `
+      <div class="journal-card ${session.photo ? '' : 'no-photo'}" style="${bgStyle}">
+        <div class="journal-duration">${formatDuration(session.durationSeconds)}</div>
+        <div class="journal-meta">${escapeHtml(session.author)} · ${dateStr}</div>
+        ${session.note ? `<div class="journal-note">${escapeHtml(session.note)}</div>` : ''}
+      </div>`;
+  }
+
+  // ============ TIMER ============
+  function currentTimerSeconds() {
+    if (!timerRunning) return timerAccumSeconds;
+    return timerAccumSeconds + Math.floor((Date.now() - timerStartedAt) / 1000);
+  }
+  function startTimer(subject) {
+    if (timerRunning) return;
+    if (!myName) { openNamePrompt(null); return; }
+    timerRunning = true;
+    timerSubject = subject;
+    timerStartedAt = Date.now();
+    timerAccumSeconds = 0;
+    renderSubjectPanel();
+    timerIntervalId = setInterval(() => {
+      const el = document.getElementById('timerDisplay');
+      if (el) el.textContent = formatTimerClock(currentTimerSeconds());
+    }, 1000);
+  }
+  function stopTimer() {
+    if (!timerRunning) return;
+    const finalSeconds = currentTimerSeconds();
+    clearInterval(timerIntervalId);
+    timerIntervalId = null;
+    timerRunning = false;
+    openDecorateModal(timerSubject, finalSeconds);
+    timerSubject = null;
+    timerAccumSeconds = 0;
+    renderSubjectPanel();
+  }
+
+  // ============ DECORATE / JOURNAL SAVE ============
+  let pendingDecorateSubject = null;
+  let pendingDecorateSeconds = 0;
+
+  function renderSwatchGrid() {
+    const grid = document.getElementById('swatchGrid');
+    grid.innerHTML = '';
+    SWATCHES.forEach(sw => {
+      const div = document.createElement('div');
+      div.className = `swatch ${sw.id === pendingSwatch ? 'selected' : ''}`;
+      div.style.background = sw.css;
+      div.onclick = () => { pendingSwatch = sw.id; renderSwatchGrid(); };
+      grid.appendChild(div);
+    });
+  }
+
+  function openDecorateModal(subject, seconds) {
+    pendingDecorateSubject = subject;
+    pendingDecorateSeconds = seconds;
+    pendingPhotoDataUrl = null;
+    pendingSwatch = 'mint';
+    document.getElementById('decorateSub').textContent = `You studied ${escapeHtml(subject)} — decorate this session before saving it.`;
+    document.getElementById('decorateDuration').textContent = formatTimerClock(seconds);
+    document.getElementById('decorateNote').value = '';
+    document.getElementById('photoInput').value = '';
+    document.getElementById('photoPreview').classList.remove('shown');
+    renderSwatchGrid();
+    document.getElementById('decorateOverlay').classList.add('open');
+  }
+
+  document.getElementById('photoInput').addEventListener('change', function (e) {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = function (evt) {
+      const img = new Image();
+      img.onload = function () {
+        const maxWidth = 480;
+        const scale = Math.min(1, maxWidth / img.width);
+        const canvas = document.createElement('canvas');
+        canvas.width = img.width * scale;
+        canvas.height = img.height * scale;
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+        pendingPhotoDataUrl = canvas.toDataURL('image/jpeg', 0.7);
+        const preview = document.getElementById('photoPreview');
+        preview.src = pendingPhotoDataUrl;
+        preview.classList.add('shown');
+      };
+      img.src = evt.target.result;
+    };
+    reader.readAsDataURL(file);
+  });
+
+  async function saveJournalEntry() {
+    if (pendingDecorateSeconds <= 0) { discardSession(); return; }
+    const note = document.getElementById('decorateNote').value.trim();
+    const newSession = {
+      id: Date.now(),
+      subject: pendingDecorateSubject,
+      author: myName || 'Anonymous',
+      durationSeconds: pendingDecorateSeconds,
+      endedAt: Date.now(),
+      note,
+      photo: pendingPhotoDataUrl,
+      swatch: pendingSwatch
+    };
+    document.getElementById('decorateOverlay').classList.remove('open');
+    await saveSessions([...sessions, newSession]);
+  }
+
+  function discardSession() {
+    document.getElementById('decorateOverlay').classList.remove('open');
+    pendingDecorateSubject = null;
+    pendingDecorateSeconds = 0;
+  }
+
+  // ============ NOTES ============
+  async function saveNotes() {
+    if (!activeSubject) return;
+    const text = document.getElementById('notesTextarea').value;
+    const newMap = { ...notesMap, [activeSubject]: { text, updatedBy: myName || 'Anonymous', updatedAt: Date.now() } };
+    await saveNotesMap(newMap);
+  }
+
+  // ============ UTIL ============
+  function escapeHtml(str) {
+    const div = document.createElement('div');
+    div.textContent = str == null ? '' : str;
+    return div.innerHTML;
+  }
+  function escapeJs(str) { return String(str).replace(/'/g, "\\'"); }
+
+  document.getElementById('taskInput').addEventListener('keydown', e => { if (e.key === 'Enter') addTask(); });
+  document.getElementById('examSubject').addEventListener('keydown', e => { if (e.key === 'Enter') addExam(); });
+  document.getElementById('nameInput').addEventListener('keydown', e => { if (e.key === 'Enter') confirmName(); });
+  document.getElementById('newSubjectInput').addEventListener('keydown', e => { if (e.key === 'Enter') addSubject(); });
+  ['loginName', 'loginEmail'].forEach(id => {
+    document.getElementById(id).addEventListener('keydown', e => { if (e.key === 'Enter') submitLogin(); });
+  });
+
+  init();
+</script>
+</body>
+</html>
